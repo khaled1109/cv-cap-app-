@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>My CV App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Optional UI Framework -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primitive-ui/dist/css/main.css">
+
+  <!-- Vue & Axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="cv-container" v-cloak>
+    <h1>{{ cv.fullName }}</h1>
+    <h2>{{ cv.jobTitle }}</h2>
+    <p>{{ cv.summary }}</p>
+
+    <!-- Kontakt Icons -->
+    <div class="icon-row" v-if="cv.fullName">
+      <span>📧 {{ cv.email }}</span>
+      <span>📞 {{ cv.phone }}</span>
+      <span>📍 {{ cv.location }}</span>
+      <span>🔗 <a :href="cv.linkedin" target="_blank">{{ cv.linkedin }}</a></span>
+      <span>🐙 <a :href="cv.github" target="_blank">{{ cv.github }}</a></span>
+    </div>
+
+    <!-- Berufserfahrung -->
+    <div class="experience-section" v-if="experiences.length">
+      <h2>Berufserfahrung</h2>
+      <div class="experience-entry" v-for="exp in experiences" :key="exp.ID">
+        <div>
+          <h3>{{ exp.title }}</h3>
+          <small>{{ exp.start }} – {{ exp.end }}</small>
+        </div>
+        <p><strong>{{ exp.company }}</strong> – <em>{{ exp.location }}</em></p>
+        <ul>
+          <li v-for="line in exp.description.split(', ')">{{ line }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Ausbildung -->
+    <div class="education-section" v-if="education.length">
+      <h2>Ausbildung</h2>
+      <div class="education-entry" v-for="edu in education" :key="edu.ID">
+        <h3>{{ edu.degree }}</h3>
+        <strong>{{ edu.institution }}</strong> – <em>{{ edu.location }}, {{ edu.country }}</em><br>
+        <small>{{ edu.start }} – {{ edu.end }} <span v-if="edu.graduated">✔️</span></small>
+        <p v-if="edu.grade"><strong>Note:</strong> {{ edu.grade }}</p>
+        <p v-if="edu.thesis"><strong>Abschlussarbeit:</strong> {{ edu.thesis }}</p>
+        <ul v-if="edu.details">
+          <li v-for="line in edu.details.split('\n')">{{ line }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Fähigkeiten -->
+    <div class="skills-section" v-if="skills.length">
+      <h2>Fähigkeiten</h2>
+      <div class="skill-category-box"
+          v-for="(group, category) in groupedSkills"
+          :key="category"
+          :class="getCategoryClass(category)">
+        <h3>{{ category }}</h3>
+        <div class="skills-tags">
+          <span class="skill-tag" v-for="skill in group" :key="skill.ID">{{ skill.skill }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
